@@ -3,7 +3,6 @@
 #include <Geode/modify/PlayLayer.hpp>
 #include <algorithm>
 #include <deque>
-#include <legowiifun.cheat_api/include/cheatAPI.hpp>
 
 using namespace geode::prelude;
 
@@ -45,19 +44,9 @@ static bool bufferActive() {
     return flag("enabled") && setting("max-buffer") > 0;
 }
 
-// Tell the Cheat API (and through it, cheat indicators / safe mode mods)
-// whether D mod is currently cheating. Only calls it when the state changes.
-static void syncCheat() {
-    static bool flagged = false;
-    bool want = bufferActive();
-    if (want && !flagged) {
-        cheatAPIEvents::setCheatingAll();
-        flagged = true;
-    } else if (!want && flagged) {
-        cheatAPIEvents::endCheatingAll();
-        flagged = false;
-    }
-}
+// Cheat API hook-up removed for the safe-mode test build. Kept as an empty
+// stub so the calls below still compile; put the Cheat API calls back here.
+static void syncCheat() {}
 
 // Master hotkey: flips "enabled" on or off. The key is a normal setting, so
 // you can rebind it in the mod's settings.
@@ -109,7 +98,7 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         float const dt = 1.f / 240.f;
         for (int i = 0; i < delay + window && !g_simDied; ++i) {
             if (i == delay) GJBaseGameLayer::handleButton(q.down, q.button, q.isPlayer1);
-            GJBaseGameLayer::processCommands(dt, false, false);
+            GJBaseGameLayer::processCommands(dt);
         }
         g_simulating = false;
         return !g_simDied;
@@ -159,9 +148,9 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         }
     }
 
-    void processCommands(float dt, bool isHalfTick, bool isLastTick) {
+    void processCommands(float dt) {
         if (g_simulating) {
-            GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
+            GJBaseGameLayer::processCommands(dt);
             return;
         }
         auto f = m_fields.self();
@@ -189,7 +178,7 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         }
         f->flushing = false;
 
-        GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
+        GJBaseGameLayer::processCommands(dt);
     }
 };
 
