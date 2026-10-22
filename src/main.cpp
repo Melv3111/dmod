@@ -92,20 +92,20 @@ class $modify(DGameLayer, GJBaseGameLayer) {
 
     // Trial-run: apply the click after `delay` ticks, run `window` ticks past
     // that, and report whether the player survived.
-    bool survives(QueuedInput const& q, int delay, int window) {
+    bool survives(QueuedInput const& q, int delay, int window,
+                  float dt, bool isHalfTick, bool isLastTick) {
         g_simulating = true;
         g_simDied = false;
-        float const dt = 1.f / 240.f;
         for (int i = 0; i < delay + window && !g_simDied; ++i) {
             if (i == delay) GJBaseGameLayer::handleButton(q.down, q.button, q.isPlayer1);
-            GJBaseGameLayer::processCommands(dt);
+            GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
         }
         g_simulating = false;
         return !g_simDied;
     }
 
     // Earliest delay (0..max-buffer) that survives, or 0 if none do.
-    int pickDelay(QueuedInput const& q) {
+    int pickDelay(QueuedInput const& q, float dt, bool isHalfTick, bool isLastTick) {
         auto pl = PlayLayer::get();
         if (!pl) return 0;
         int cap = static_cast<int>(std::clamp<int64_t>(setting("max-buffer"), 0, 20));
@@ -118,7 +118,7 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         int chosen = 0;
         bool found = false;
         for (int d = 0; d <= cap && !found; ++d) {
-            if (survives(q, d, window)) {
+            if (survives(q, d, window, dt, isHalfTick, isLastTick)) {
                 chosen = d;
                 found = true;
             }
@@ -148,9 +148,11 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         }
     }
 
-    void processCommands(float dt) {
-        if (g_simulating) {
-            GJBaseGameLayer::processCommands(dt);
+    void processCommands(float dt, bool isHalfTick, bool isLastTick) {
+        // Half ticks and trial runs pass straight through. Only whole ticks
+        // are counted, so "1 tick" stays one physics step.
+        if (g_simulating || isHalfTick) {
+            GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
             return;
         }
         auto f = m_fields.self();
@@ -160,7 +162,7 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         for (size_t i = 0; i < f->queue.size(); ++i) {
             auto& q = f->queue[i];
             if (q.decided || !q.down) continue;
-            int d = pickDelay(q);
+            int d = pickDelay(q, dt, isHalfTick, isLastTick);
             int due = f->tick + d;
             if (i > 0) due = std::max(due, f->queue[i - 1].dueTick);
             q.dueTick = due;
@@ -178,7 +180,7 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         }
         f->flushing = false;
 
-        GJBaseGameLayer::processCommands(dt);
+        GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
     }
 };
 
