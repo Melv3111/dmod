@@ -9,13 +9,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Build Geode Mod
-        uses: geode-sdk/build-geode-mod@v1
+      - name: Build
+        uses: geode-sdk/build-geode-mod@main
         with:
-          sdk: "5.11.2"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: d-mod
-          path: ./build/*.geode
+          sdk: latest
