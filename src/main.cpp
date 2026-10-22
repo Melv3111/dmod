@@ -109,7 +109,7 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         float const dt = 1.f / 240.f;
         for (int i = 0; i < delay + window && !g_simDied; ++i) {
             if (i == delay) GJBaseGameLayer::handleButton(q.down, q.button, q.isPlayer1);
-            GJBaseGameLayer::processCommands(dt);
+            GJBaseGameLayer::processCommands(dt, false, false);
         }
         g_simulating = false;
         return !g_simDied;
@@ -159,9 +159,9 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         }
     }
 
-    void processCommands(float dt) {
+    void processCommands(float dt, bool isHalfTick, bool isLastTick) {
         if (g_simulating) {
-            GJBaseGameLayer::processCommands(dt);
+            GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
             return;
         }
         auto f = m_fields.self();
@@ -189,7 +189,7 @@ class $modify(DGameLayer, GJBaseGameLayer) {
         }
         f->flushing = false;
 
-        GJBaseGameLayer::processCommands(dt);
+        GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
     }
 };
 
