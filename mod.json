@@ -1,17 +1,74 @@
 {
-	"geode": "$GEODE_VERSION",
-	"gd": {
-		"win": "2.2081",
-		"android": "2.2081",
-		"mac": "2.2081",
-		"ios": "2.2081"
-	},
-	"id": "$MOD_ID",
-	"name": "$MOD_NAME",
-	"version": "$MOD_VERSION",
-	"developer": "$MOD_DEVELOPER",
-	"description": "$MOD_DESCRIPTION",
-	"dependencies": {
-		"geode.node-ids": ">=v1.23.3"
-	}
+  "geode": "5.0.0-beta.3",
+  "gd": {
+    "win": "2.2081",
+    "android": "2.2081",
+    "mac": "2.2081"
+  },
+  "id": "melvin.d-mod",
+  "name": "D mod",
+  "version": "v1.1.0",
+  "developer": "Melvin",
+  "description": "Predictive input buffer prank. Forces safe mode while active.",
+  "tags": ["gameplay", "joke", "cheat"],
+  "dependencies": [
+    {
+      "id": "legowiifun.cheat_api",
+      "version": ">=v1.2.3",
+      "importance": "required"
+    }
+  ],
+  "settings": {
+    "enabled": {
+      "type": "bool",
+      "name": "Enabled",
+      "default": true
+    },
+    "toggle-key": {
+      "type": "keybind",
+      "name": "Toggle hotkey",
+      "description": "Press this in-game to turn D mod on or off.",
+      "default": "F8"
+    },
+    "toggle-popup": {
+      "type": "bool",
+      "name": "Show popup when toggled",
+      "description": "Off by default so the toggle is quiet.",
+      "default": false
+    },
+    "max-buffer": {
+      "type": "int",
+      "name": "Max buffer (ticks)",
+      "description": "Longest a click can be held back. 1 tick = ~4 ms (240 TPS). 0 turns the buffer off.",
+      "default": 4,
+      "min": 0,
+      "max": 20,
+      "control": { "slider": true }
+    },
+    "look-ahead": {
+      "type": "int",
+      "name": "Look-ahead (ticks)",
+      "description": "How far ahead each trial run checks for death. 24 ticks = ~100 ms. Higher is smarter but can stutter.",
+      "default": 24,
+      "min": 4,
+      "max": 60,
+      "control": { "slider": true }
+    },
+    "affect-player1": {
+      "type": "bool",
+      "name": "Affect player 1",
+      "default": true
+    },
+    "affect-player2": {
+      "type": "bool",
+      "name": "Affect player 2",
+      "default": true
+    },
+    "do-not": {
+      "type": "bool",
+      "name": "Do Not...",
+      "description": "Please don't.",
+      "default": false
+    }
+  }
 }
