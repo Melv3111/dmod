@@ -7,16 +7,13 @@
   },
   "id": "melvin.d-mod",
   "name": "D mod",
-  "version": "v1.1.0",
+  "version": "v1.1.1",
   "developer": "Melvin",
   "description": "Predictive input buffer prank. Forces safe mode while active.",
-  "tags": ["gameplay", "joke", "cheat"],
-  "dependencies": [
-    {
-      "id": "legowiifun.cheat_api",
-      "version": ">=v1.2.3",
-      "importance": "required"
-    }
+  "tags": [
+    "gameplay",
+    "joke",
+    "cheat"
   ],
   "settings": {
     "enabled": {
@@ -43,7 +40,9 @@
       "default": 4,
       "min": 0,
       "max": 20,
-      "control": { "slider": true }
+      "control": {
+        "slider": true
+      }
     },
     "look-ahead": {
       "type": "int",
@@ -52,7 +51,9 @@
       "default": 24,
       "min": 4,
       "max": 60,
-      "control": { "slider": true }
+      "control": {
+        "slider": true
+      }
     },
     "affect-player1": {
       "type": "bool",
